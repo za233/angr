@@ -119,6 +119,10 @@ class SequenceNode(BaseNode):
 
         return s
 
+    def children(self):
+        for node in self.nodes:
+            yield node
+
 
 class CodeNode(BaseNode):
 
@@ -158,6 +162,9 @@ class CodeNode(BaseNode):
     def copy(self):
         return CodeNode(self.node, self.reaching_condition)
 
+    def children(self):
+        yield self.node
+
 
 class ConditionNode(BaseNode):
 
@@ -193,6 +200,10 @@ class ConditionNode(BaseNode):
             return "<ConditionNode %#x>" % self.addr
         else:
             return "<ConditionNode (%r|%r)>" % (self.true_node, self.false_node)
+
+    def children(self):
+        yield self.true_node
+        yield self.false_node
 
 
 class CascadingConditionNode(BaseNode):
@@ -246,6 +257,9 @@ class LoopNode(BaseNode):
     def continue_addr(self, value):
         self._continue_addr = value
 
+    def children(self):
+        yield self.sequence_node
+
 
 class BreakNode(BaseNode):
 
@@ -255,6 +269,9 @@ class BreakNode(BaseNode):
         self.addr = addr
         self.target = target
 
+    def children(self):
+        raise StopIteration()
+
 
 class ContinueNode(BaseNode):
 
@@ -263,6 +280,9 @@ class ContinueNode(BaseNode):
     def __init__(self, addr, target):
         self.addr = addr
         self.target = target
+
+    def children(self):
+        raise StopIteration()
 
 
 class ConditionalBreakNode(BreakNode):
@@ -276,6 +296,9 @@ class ConditionalBreakNode(BreakNode):
     def __repr__(self):
         return "<ConditionalBreakNode %#x target:%#x>" % (self.addr, self.target)
 
+    def children(self):
+        raise StopIteration()
+
 
 class SwitchCaseNode(BaseNode):
 
@@ -286,3 +309,7 @@ class SwitchCaseNode(BaseNode):
         self.cases = cases
         self.default_node = default_node
         self.addr = addr
+
+    def children(self):
+        yield from self.cases
+        yield self.default_node
