@@ -11,6 +11,8 @@ if TYPE_CHECKING:
     from ..knowledge_plugins import KeyDefinitionManager
     from ..knowledge_plugins import CFGManager
     from ..knowledge_plugins import StructuredCodeManager
+    from ..knowledge_plugins import InsightManager
+    from ..knowledge_plugins import XRefManager
 
 from ..knowledge_plugins.plugin import default_plugins
 
@@ -31,6 +33,8 @@ class KnowledgeBase:
     structured_code: 'StructuredCodeManager'
     defs: 'KeyDefinitionManager'
     cfgs: 'CFGManager'
+    xrefs: 'XRefManager'
+    insights: 'InsightManager'
     _project: 'Project'
 
     def __init__(self, project, obj=None, name=None):
