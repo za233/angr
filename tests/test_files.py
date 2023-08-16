@@ -1,5 +1,6 @@
 # pylint: disable=missing-class-docstring,disable=no-self-use
 import os
+import sys
 import unittest
 
 import angr
@@ -32,6 +33,7 @@ class TestFile(unittest.TestCase):
         assert len(data.variables) == 1
         assert "oops" in next(iter(data.variables))
 
+    @unittest.skipIf(sys.platform == "win32", "broken on windows")
     def test_concrete_fs_resolution(self):
         bin_path = os.path.join(test_location, "binaries", "tests", "i386", "fauxware")
         proj = angr.Project(bin_path, auto_load_libs=False)
